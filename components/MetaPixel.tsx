@@ -1,0 +1,55 @@
+"use client";
+
+import Script from "next/script";
+import { usePathname } from "next/navigation";
+import { useEffect, useRef } from "react";
+import { FB_PIXEL_ID, fbPageview } from "@/lib/fbpixel";
+
+/* Base Meta Pixel: loads fbevents.js, fires the initial PageView, and re-fires
+   PageView on client-side route changes (App Router navigations don't reload
+   the page, so the base script alone would only count the first view). */
+export function MetaPixel() {
+  const pathname = usePathname();
+  const first = useRef(true);
+
+  useEffect(() => {
+    // The inline script already fired PageView for the initial load.
+    if (first.current) {
+      first.current = false;
+      return;
+    }
+    fbPageview();
+  }, [pathname]);
+
+  return (
+    <>
+      <Script
+        id="meta-pixel"
+        strategy="afterInteractive"
+        dangerouslySetInnerHTML={{
+          __html: `
+!function(f,b,e,v,n,t,s)
+{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];
+s.parentNode.insertBefore(t,s)}(window, document,'script',
+'https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '${FB_PIXEL_ID}');
+fbq('track', 'PageView');`,
+        }}
+      />
+      <noscript>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          height="1"
+          width="1"
+          alt=""
+          style={{ display: "none" }}
+          src={`https://www.facebook.com/tr?id=${FB_PIXEL_ID}&ev=PageView&noscript=1`}
+        />
+      </noscript>
+    </>
+  );
+}

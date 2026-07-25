@@ -1,0 +1,37 @@
+{
+  "name": "air-refrigerant-storefront",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Air Refrigerant — EPA-certified refrigerant & Freon wholesale storefront with Stripe Checkout.",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "test:e2e": "playwright test",
+    "test:e2e:install": "playwright install --with-deps chromium"
+  },
+  "overrides": {
+    "playwright-core": "1.62.0",
+    "postcss": "8.5.18",
+    "sharp": "0.35.0"
+  },
+  "dependencies": {
+    "@vercel/analytics": "^2.0.1",
+    "next": "15.5.21",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "server-only": "^0.0.1"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "4.10.1",
+    "@playwright/test": "1.62.0",
+    "@types/node": "20.14.10",
+    "@types/react": "18.3.3",
+    "@types/react-dom": "18.3.0",
+    "autoprefixer": "10.4.19",
+    "postcss": "8.5.18",
+    "tailwindcss": "3.4.6",
+    "typescript": "5.5.3"
+  }
+}
