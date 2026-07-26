@@ -8,7 +8,11 @@ import {
   useMemo,
   useState,
 } from "react";
-import type { CartLine } from "@/lib/checkout";
+import {
+  CHECKOUT_STORAGE_KEY,
+  type CartLine,
+  type CheckoutItem,
+} from "@/lib/checkout";
 import { fbTrack } from "@/lib/fbpixel";
 
 const STORAGE_KEY = "ar_cart_lines_v1";
@@ -106,32 +110,18 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const clear = useCallback(() => setLines([]), []);
 
   const startCheckout = useCallback(
-    async (items: { variantId: string; quantity: number }[]) => {
+    async (items: CheckoutItem[]) => {
       setCheckingOut(true);
       setCheckoutError(null);
       try {
-        const res = await fetch("/api/checkout", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ items }),
-        });
-        const data = await res.json().catch(() => null);
-
-        if (!res.ok || !data?.url) {
-          throw new Error(
-            data?.error === "stripe_not_configured"
-              ? "Checkout is not configured yet. Add STRIPE_SECRET_KEY in Vercel."
-              : "Secure checkout is temporarily unavailable. Please try again.",
-          );
-        }
-
-        leaveTo(data.url);
+        sessionStorage.setItem(CHECKOUT_STORAGE_KEY, JSON.stringify(items));
+        leaveTo("/checkout");
       } catch (error) {
         setCheckingOut(false);
         setCheckoutError(
           error instanceof Error
             ? error.message
-            : "Secure checkout is temporarily unavailable. Please try again.",
+            : "We could not open checkout. Please try again.",
         );
       }
     },

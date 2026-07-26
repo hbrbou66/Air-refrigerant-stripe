@@ -9,3 +9,10 @@ export interface CartLine {
   currency: string;
   image: string;
 }
+
+export interface CheckoutItem {
+  variantId: string;
+  quantity: number;
+}
+
+export const CHECKOUT_STORAGE_KEY = "ar_checkout_items_v1";

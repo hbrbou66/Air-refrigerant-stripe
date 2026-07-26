@@ -72,7 +72,7 @@ export default function CartPage() {
               <span className="font-heading text-xl font-bold text-navy">{formatPrice(subtotal)}</span>
             </div>
             <button onClick={goToCheckout} disabled={isCheckingOut} className="btn-amber mt-4 w-full disabled:opacity-70">
-              {isCheckingOut ? "Redirecting…" : "Proceed to Checkout"}
+              {isCheckingOut ? "Opening secure checkout…" : "Proceed to Checkout"}
             </button>
             {checkoutError && (
               <p role="alert" className="mt-3 rounded-lg border border-amber/40 bg-amber/10 p-2 text-center text-xs text-navy">

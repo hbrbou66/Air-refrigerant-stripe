@@ -152,7 +152,7 @@ export function ProductPurchase({ product }: { product: Product }) {
           disabled={isCheckingOut}
           className="btn-amber flex-1 disabled:opacity-70"
         >
-          <IconBolt width={18} height={18} /> {isCheckingOut ? "Loading Checkout…" : "Buy Now"}
+          <IconBolt width={18} height={18} /> {isCheckingOut ? "Opening Checkout…" : "Buy Now"}
         </button>
       </div>
       {checkoutError && (

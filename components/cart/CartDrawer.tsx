@@ -108,7 +108,7 @@ export function CartDrawer() {
                 <IconCheck width={14} height={14} /> Free shipping &amp; taxes calculated at checkout
               </p>
               <button onClick={goToCheckout} disabled={isCheckingOut} className="btn-amber w-full text-base disabled:opacity-70">
-                {isCheckingOut ? "Redirecting to secure checkout…" : "Checkout"}
+                {isCheckingOut ? "Opening secure checkout…" : "Checkout"}
               </button>
               {checkoutError && (
                 <p role="alert" className="mt-2 rounded-lg border border-amber/40 bg-amber/10 p-2 text-center text-xs text-navy">

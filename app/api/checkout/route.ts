@@ -1,14 +1,10 @@
 import { NextResponse } from "next/server";
+import type { CheckoutItem } from "@/lib/checkout";
 import { resolveCatalogLines } from "@/lib/products";
 import { createCheckoutSession, isStripeConfigured } from "@/lib/stripe";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
-
-interface CheckoutItem {
-  variantId: string;
-  quantity: number;
-}
 
 function parseItems(value: unknown): CheckoutItem[] {
   if (!Array.isArray(value)) return [];
@@ -50,11 +46,14 @@ export async function POST(req: Request) {
     const origin = configuredOrigin || new URL(req.url).origin;
     const session = await createCheckoutSession(lines, origin);
 
-    if (!session.url) {
-      throw new Error("Stripe did not return a Checkout URL");
+    if (!session.client_secret) {
+      throw new Error("Stripe did not return an Embedded Checkout client secret");
     }
 
-    return NextResponse.json({ url: session.url });
+    return NextResponse.json({
+      clientSecret: session.client_secret,
+      sessionId: session.id,
+    });
   } catch (error) {
     console.error("Stripe checkout session creation failed", error);
     return NextResponse.json(

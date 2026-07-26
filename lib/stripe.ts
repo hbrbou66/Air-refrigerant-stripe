@@ -5,6 +5,7 @@ const STRIPE_API = "https://api.stripe.com/v1";
 
 export interface StripeCheckoutSession {
   id: string;
+  client_secret?: string | null;
   url?: string | null;
   created: number;
   status?: "open" | "complete" | "expired" | null;
@@ -97,11 +98,12 @@ export async function createCheckoutSession(
   const form = new URLSearchParams();
 
   form.set("mode", "payment");
+  form.set("ui_mode", "embedded");
   form.set(
-    "success_url",
+    "return_url",
     `${siteOrigin}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
   );
-  form.set("cancel_url", `${siteOrigin}/cart?checkout=cancelled`);
+  form.set("redirect_on_completion", "if_required");
   form.set("billing_address_collection", "required");
   form.set("shipping_address_collection[allowed_countries][0]", "US");
   form.set("phone_number_collection[enabled]", "true");

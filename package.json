@@ -17,6 +17,8 @@
     "sharp": "0.35.0"
   },
   "dependencies": {
+    "@stripe/react-stripe-js": "^6.8.0",
+    "@stripe/stripe-js": "^9.12.0",
     "@vercel/analytics": "^2.0.1",
     "next": "15.5.21",
     "react": "18.3.1",
