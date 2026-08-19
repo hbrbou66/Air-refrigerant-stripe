@@ -36,8 +36,8 @@ export const POLICIES: Policy[] = [
     title: "Shipping Policy",
     summary: "Free shipping, processing times, and delivery details.",
     sections: [
-      { heading: "Limited-time offer", body: [
-        `This offer is valid until ${PROMO.validUntil}. All orders will be shipped on ${PROMO.shipDate}.`,
+      { heading: PROMO.headline, body: [
+        PROMO.note,
         "Free FedEx/UPS shipping applies to every order placed during this offer, with no hazmat surcharges.",
       ]},
       { heading: "Free shipping on all orders", body: [

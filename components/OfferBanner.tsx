@@ -1,7 +1,7 @@
 import { PROMO } from "@/lib/promo";
 import { IconBolt, IconTruck } from "@/components/Icons";
 
-/** Limited-time offer notice. Renders nothing when the promo is inactive. */
+/** Promotional inventory notice. Renders nothing when the promo is inactive. */
 export function OfferBanner({ className = "" }: { className?: string }) {
   if (!PROMO.active) return null;
   return (
@@ -13,8 +13,7 @@ export function OfferBanner({ className = "" }: { className?: string }) {
         {PROMO.headline}
       </p>
       <p className="mt-1.5 text-sm leading-relaxed text-slate">
-        Offer valid until <strong className="text-navy">{PROMO.validUntil}</strong>. All orders will be shipped on{" "}
-        <strong className="text-navy">{PROMO.shipDate}</strong>.
+        {PROMO.note}
       </p>
       <p className="mt-2 inline-flex items-center gap-1.5 text-xs font-semibold text-trust">
         <IconTruck width={13} height={13} /> Free FedEx/UPS shipping on every order
