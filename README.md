@@ -31,6 +31,14 @@ The publishable key is safe to expose in the browser; the secret key is not. Nev
 
 Optional variables for forms and analytics remain documented in [`.env.example`](./.env.example).
 
+## Meta Pixel
+
+The storefront uses Meta Pixel `1293778635943718` by default and tracks
+`PageView`, `ViewContent`, `AddToCart`, `InitiateCheckout`, and `Purchase`.
+Purchase events fire only after Stripe reports the Checkout Session as paid and
+include the order value, currency, and Stripe session reference. The session
+reference also deduplicates confirmation-page reloads in the same browser.
+
 ## How checkout works
 
 1. The cart or Buy Now action opens `/checkout` and carries only variant IDs and quantities in same-tab session storage.

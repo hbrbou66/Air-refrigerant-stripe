@@ -1,9 +1,12 @@
-// Meta (Facebook) Pixel helpers.
-// The pixel ID is configurable via NEXT_PUBLIC_FB_PIXEL_ID; it falls back to
-// the account's production pixel so tracking works out of the box.
-export const FB_PIXEL_ID = process.env.NEXT_PUBLIC_FB_PIXEL_ID || "1555772675884986";
+// Meta (Facebook) Pixel helpers. Pixel IDs are public identifiers, so the
+// production account ID can safely live in the browser bundle.
+export const FB_PIXEL_ID = "1293778635943718";
 
 type PixelParams = Record<string, unknown>;
+
+interface PixelEventOptions {
+  eventId?: string;
+}
 
 declare global {
   interface Window {
@@ -16,7 +19,18 @@ export function fbPageview(): void {
   if (typeof window !== "undefined") window.fbq?.("track", "PageView");
 }
 
-/** Fires a standard Meta Pixel event if the pixel has loaded. */
-export function fbTrack(event: string, params?: PixelParams): void {
-  if (typeof window !== "undefined") window.fbq?.("track", event, params);
+/** Fires a standard Meta Pixel event if the base pixel has initialized. */
+export function fbTrack(
+  event: string,
+  params?: PixelParams,
+  options: PixelEventOptions = {},
+): boolean {
+  if (typeof window === "undefined" || !window.fbq) return false;
+
+  if (options.eventId) {
+    window.fbq("track", event, params, { eventID: options.eventId });
+  } else {
+    window.fbq("track", event, params);
+  }
+  return true;
 }

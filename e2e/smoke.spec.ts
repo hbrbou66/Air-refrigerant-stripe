@@ -52,3 +52,32 @@ test("primary touch targets meet the 40px minimum", async ({ page }) => {
     expect(Math.min(box.width, box.height)).toBeGreaterThanOrEqual(40);
   }
 });
+
+test("Meta Pixel initializes the production account and PageView", async ({ page }) => {
+  // Keep the test deterministic while still verifying the inline bootstrap
+  // queue that is handed to fbevents.js in real browsers.
+  await page.route("https://connect.facebook.net/**", (route) => route.abort());
+  await page.goto("/", { waitUntil: "domcontentloaded" });
+
+  await expect
+    .poll(() =>
+      page.evaluate(() => {
+        const fbq = window.fbq as
+          | (typeof window.fbq & { queue?: ArrayLike<unknown>[] })
+          | undefined;
+        return fbq?.queue?.map((call) => Array.from(call).slice(0, 2)) ?? [];
+      }),
+    )
+    .toContainEqual(["init", "1293778635943718"]);
+
+  await expect
+    .poll(() =>
+      page.evaluate(() => {
+        const fbq = window.fbq as
+          | (typeof window.fbq & { queue?: ArrayLike<unknown>[] })
+          | undefined;
+        return fbq?.queue?.map((call) => Array.from(call).slice(0, 2)) ?? [];
+      }),
+    )
+    .toContainEqual(["track", "PageView"]);
+});

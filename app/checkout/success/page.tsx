@@ -8,6 +8,7 @@ import {
 import { formatPrice } from "@/lib/catalog";
 import { SITE } from "@/lib/site";
 import { ClearCartAfterCheckout } from "@/components/cart/ClearCartAfterCheckout";
+import { MetaPurchaseTracker } from "@/components/MetaPurchaseTracker";
 import { IconCheck, IconMail, IconTruck } from "@/components/Icons";
 
 export const dynamic = "force-dynamic";
@@ -69,6 +70,13 @@ export default async function CheckoutSuccessPage({
   return (
     <div className="container-px py-16">
       {paid && <ClearCartAfterCheckout />}
+      {paid && session.amount_total != null && session.currency && (
+        <MetaPurchaseTracker
+          sessionId={session.id}
+          value={session.amount_total / 100}
+          currency={session.currency}
+        />
+      )}
       <div className="mx-auto max-w-3xl overflow-hidden rounded-card border border-line bg-white shadow-card">
         <div className="bg-navy px-6 py-10 text-center text-white sm:px-10">
           <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-trust text-white">
