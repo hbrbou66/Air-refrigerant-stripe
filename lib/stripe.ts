@@ -139,17 +139,11 @@ export async function createCheckoutSession(
     "shipping_options[0][shipping_rate_data][delivery_estimate][maximum][value]",
     "7",
   );
-  form.set(
-    "custom_text[shipping_address][message]",
-    "Some refrigerants require EPA Section 608 certification. We may contact you for verification before shipment.",
-  );
-
-  lines.forEach(({ product, variant, quantity }, index) => {
+  lines.forEach(({ variant, quantity }, index) => {
     const prefix = `line_items[${index}]`;
     const currency = (variant.currency || "USD").toLowerCase();
-    const option = variant.optionLabel || variant.name;
-    const productName =
-      product.variants.length > 1 ? `${product.name} — ${option}` : product.name;
+    const sku = variant.sku?.trim();
+    const privateLineItemLabel = sku ? `SKU ${sku}` : `Item ${index + 1}`;
 
     form.set(`${prefix}[price_data][currency]`, currency);
     form.set(
@@ -158,32 +152,8 @@ export async function createCheckoutSession(
     );
     form.set(
       `${prefix}[price_data][product_data][name]`,
-      productName.slice(0, 250),
+      privateLineItemLabel,
     );
-    form.set(
-      `${prefix}[price_data][product_data][description]`,
-      `${product.refrigerantCode} refrigerant · ${option}`.slice(0, 500),
-    );
-    if (product.images[0]?.startsWith("https://")) {
-      form.set(
-        `${prefix}[price_data][product_data][images][0]`,
-        product.images[0],
-      );
-    }
-    form.set(
-      `${prefix}[price_data][product_data][metadata][product_id]`,
-      product.id,
-    );
-    form.set(
-      `${prefix}[price_data][product_data][metadata][variant_id]`,
-      variant.id,
-    );
-    if (variant.sku) {
-      form.set(
-        `${prefix}[price_data][product_data][metadata][sku]`,
-        variant.sku,
-      );
-    }
     form.set(`${prefix}[quantity]`, String(quantity));
   });
 

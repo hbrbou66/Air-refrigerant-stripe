@@ -48,7 +48,9 @@ reference also deduplicates confirmation-page reloads in the same browser.
    - billing and U.S. shipping address collection;
    - phone collection;
    - a free FedEx/UPS shipping option;
-   - the existing product names, images, variants, and prices.
+   - trusted catalog prices and quantities;
+   - privacy-minimized line items labeled only by SKU, without product names,
+     descriptions, images, product IDs, or variant IDs.
 5. Stripe's secure payment form loads directly on the Air Refrigerant checkout page.
 6. Card payments complete without leaving the site. Redirect-based payment methods return to `/checkout/success?session_id=...`.
 
