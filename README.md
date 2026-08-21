@@ -1,6 +1,6 @@
 # Air Refrigerant — Stripe Storefront
 
-Production-ready **Next.js App Router + TypeScript + Tailwind** storefront for **Air Refrigerant™**. It preserves the original site, product catalog, prices, content, address, and public routes while using **Stripe Embedded Checkout** for on-site payment.
+Production-ready **Next.js App Router + TypeScript + Tailwind** storefront for **Air Refrigerant™**. It preserves the original site, product catalog, prices, content, address, and public routes while using **Stripe-hosted Checkout** for payment.
 
 - Public site: `airrefrigerant.site` (Vercel)
 - Currency: USD
@@ -23,11 +23,10 @@ Add these in **Vercel → Project → Settings → Environment Variables**:
 
 | Variable | Required | Purpose |
 | --- | --- | --- |
-| `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` | yes | Loads Stripe's secure embedded payment form in the browser. Use `pk_test_...` while testing and `pk_live_...` for production. |
 | `STRIPE_SECRET_KEY` | yes | Creates and retrieves Stripe Checkout Sessions on the server. Use `sk_test_...` while testing and `sk_live_...` for production. |
-| `NEXT_PUBLIC_SITE_URL` | recommended | Canonical site URL and Stripe return origin: `https://airrefrigerant.site`. The request origin is used as a fallback. |
+| `NEXT_PUBLIC_SITE_URL` | recommended | Canonical site URL and Stripe success/cancel origin: `https://airrefrigerant.site`. The request origin is used as a fallback. |
 
-The publishable key is safe to expose in the browser; the secret key is not. Never give `STRIPE_SECRET_KEY` a `NEXT_PUBLIC_` prefix. Stripe renders the sensitive payment fields inside its secure embedded form, so the storefront never receives full card details.
+The hosted flow needs only the Stripe secret key; a publishable key is not required. Never give `STRIPE_SECRET_KEY` a `NEXT_PUBLIC_` prefix. Stripe hosts the payment page, so the storefront never receives full card details.
 
 Optional variables for forms and analytics remain documented in [`.env.example`](./.env.example).
 
@@ -42,27 +41,24 @@ reference also deduplicates confirmation-page reloads in the same browser.
 ## How checkout works
 
 1. The cart or Buy Now action opens `/checkout` and carries only variant IDs and quantities in same-tab session storage.
-2. The embedded checkout page sends those IDs and quantities to `POST /api/checkout`.
+2. The checkout redirect page sends those IDs and quantities to `POST /api/checkout`.
 3. The server resolves the IDs against `lib/snapshot.ts`. Names and prices are never accepted from the browser.
-4. The server creates an Embedded Stripe Checkout Session with:
+4. The server creates a hosted Stripe Checkout Session with:
    - billing and U.S. shipping address collection;
    - phone collection;
    - a free FedEx/UPS shipping option;
    - trusted catalog prices and quantities;
-   - privacy-minimized line items labeled only by SKU, without product names,
-     descriptions, images, product IDs, or variant IDs.
-5. The Air Refrigerant checkout page displays a trusted order review with each
-   product's image, name, option, quantity, and total. These details come from
-   the server catalog rather than browser-supplied values.
-6. Stripe's secure payment form loads beneath that review and continues to
-   receive SKU-only line-item labels.
-7. Card payments complete without leaving the site. Redirect-based payment methods return to `/checkout/success?session_id=...`.
+   - full product names, selected options, images, and SKU metadata.
+5. The browser redirects to Stripe's hosted page, where the customer reviews
+   the ordered products, quantities, shipping, and total before paying.
+6. Stripe returns successful payments to `/checkout/success?session_id=...`;
+   canceling returns the customer to `/cart`.
 
 The Track Order page accepts the Stripe Checkout Session reference shown on the confirmation page. Stripe payment information stays server-side.
 
 ## Test checkout
 
-1. Set `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_...` and `STRIPE_SECRET_KEY=sk_test_...` from the same Stripe test-mode account.
+1. Set `STRIPE_SECRET_KEY=sk_test_...` from your Stripe test-mode account.
 2. Start the app and add a product to the cart.
 3. Continue to Checkout.
 4. Use Stripe test card `4242 4242 4242 4242`, any future expiry, and any CVC.
@@ -81,7 +77,7 @@ Routes include Home, collections, product detail, cart, checkout confirmation, q
 ## Deploy to Vercel
 
 1. Push this repository and import it into Vercel.
-2. Add `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`, `STRIPE_SECRET_KEY`, and `NEXT_PUBLIC_SITE_URL` for Production, Preview, and Development as appropriate.
+2. Add `STRIPE_SECRET_KEY` and `NEXT_PUBLIC_SITE_URL` for Production, Preview, and Development as appropriate.
 3. Deploy and attach `airrefrigerant.site`.
 4. Run a full test-mode purchase on the deployed URL.
 5. Replace the test secret with the live secret for Production.

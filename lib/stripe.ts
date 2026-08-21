@@ -98,12 +98,12 @@ export async function createCheckoutSession(
   const form = new URLSearchParams();
 
   form.set("mode", "payment");
-  form.set("ui_mode", "embedded");
+  form.set("ui_mode", "hosted");
   form.set(
-    "return_url",
+    "success_url",
     `${siteOrigin}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
   );
-  form.set("redirect_on_completion", "if_required");
+  form.set("cancel_url", `${siteOrigin}/cart`);
   form.set("billing_address_collection", "required");
   form.set("shipping_address_collection[allowed_countries][0]", "US");
   form.set("phone_number_collection[enabled]", "true");
@@ -139,11 +139,11 @@ export async function createCheckoutSession(
     "shipping_options[0][shipping_rate_data][delivery_estimate][maximum][value]",
     "7",
   );
-  lines.forEach(({ variant, quantity }, index) => {
+  lines.forEach(({ product, variant, quantity }, index) => {
     const prefix = `line_items[${index}]`;
     const currency = (variant.currency || "USD").toLowerCase();
-    const sku = variant.sku?.trim();
-    const privateLineItemLabel = sku ? `SKU ${sku}` : `Item ${index + 1}`;
+    const sku = variant.sku?.trim() || `Item-${index + 1}`;
+    const variantLabel = variant.optionLabel || variant.name;
 
     form.set(`${prefix}[price_data][currency]`, currency);
     form.set(
@@ -152,10 +152,35 @@ export async function createCheckoutSession(
     );
     form.set(
       `${prefix}[price_data][product_data][name]`,
-      privateLineItemLabel,
+      `${product.name} — ${variantLabel}`,
+    );
+    form.set(
+      `${prefix}[price_data][product_data][description]`,
+      variantLabel,
+    );
+    if (product.images[0]) {
+      form.set(
+        `${prefix}[price_data][product_data][images][0]`,
+        product.images[0],
+      );
+    }
+    form.set(
+      `${prefix}[price_data][product_data][metadata][sku]`,
+      sku,
     );
     form.set(`${prefix}[quantity]`, String(quantity));
   });
+
+  form.set(
+    "metadata[skus]",
+    lines
+      .map(
+        ({ variant }, index) =>
+          variant.sku?.trim() || `Item-${index + 1}`,
+      )
+      .join(", ")
+      .slice(0, 500),
+  );
 
   return stripeFetch("/checkout/sessions", { method: "POST", body: form });
 }

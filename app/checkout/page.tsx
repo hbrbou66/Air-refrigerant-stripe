@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { EmbeddedStripeCheckout } from "@/components/checkout/EmbeddedStripeCheckout";
+import { StripeCheckoutRedirect } from "@/components/checkout/StripeCheckoutRedirect";
 import {
   IconCheck,
   IconHeadset,
@@ -19,8 +19,8 @@ export const metadata: Metadata = {
 const checkoutBenefits = [
   {
     icon: IconLock,
-    title: "Secure on-site payment",
-    body: "Card details are encrypted and handled directly by Stripe.",
+    title: "Stripe-hosted payment",
+    body: "Review your products and pay securely on Stripe Checkout.",
   },
   {
     icon: IconTruck,
@@ -50,7 +50,7 @@ export default function CheckoutPage() {
               Secure checkout
             </h1>
             <p className="mt-2 max-w-2xl text-slate-soft">
-              Complete your order without leaving Air Refrigerant.
+              We&apos;re securely transferring your order to Stripe Checkout.
             </p>
           </div>
           <span className="badge border border-trust/20 bg-trust-soft text-trust">
@@ -62,9 +62,9 @@ export default function CheckoutPage() {
         <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_320px] xl:gap-8">
           <section
             className="min-w-0 overflow-hidden rounded-card border border-line bg-white shadow-card"
-            aria-label="Order review, payment, and shipping details"
+            aria-label="Stripe Checkout redirect"
           >
-            <EmbeddedStripeCheckout />
+            <StripeCheckoutRedirect />
           </section>
 
           <aside className="grid gap-5 lg:sticky lg:top-28">
@@ -76,8 +76,8 @@ export default function CheckoutPage() {
                 Your details stay private
               </h2>
               <p className="mt-2 text-sm leading-6 text-white/70">
-                Stripe securely processes payment information inside the form.
-                Air Refrigerant never stores your full card number.
+                Stripe will display your ordered products before collecting
+                payment. Air Refrigerant never stores your full card number.
               </p>
             </div>
 
