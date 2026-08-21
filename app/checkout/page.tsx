@@ -62,17 +62,9 @@ export default function CheckoutPage() {
         <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_320px] xl:gap-8">
           <section
             className="min-w-0 overflow-hidden rounded-card border border-line bg-white shadow-card"
-            aria-label="Payment and shipping details"
+            aria-label="Order review, payment, and shipping details"
           >
-            <div className="border-b border-line bg-cloud px-5 py-4 sm:px-7">
-              <p className="flex items-center gap-2 text-sm font-semibold text-navy">
-                <IconLock width={17} height={17} className="text-trust" />
-                Payment and shipping details
-              </p>
-            </div>
-            <div className="px-1 py-4 sm:px-4 sm:py-6">
-              <EmbeddedStripeCheckout />
-            </div>
+            <EmbeddedStripeCheckout />
           </section>
 
           <aside className="grid gap-5 lg:sticky lg:top-28">

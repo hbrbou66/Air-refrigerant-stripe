@@ -51,8 +51,12 @@ reference also deduplicates confirmation-page reloads in the same browser.
    - trusted catalog prices and quantities;
    - privacy-minimized line items labeled only by SKU, without product names,
      descriptions, images, product IDs, or variant IDs.
-5. Stripe's secure payment form loads directly on the Air Refrigerant checkout page.
-6. Card payments complete without leaving the site. Redirect-based payment methods return to `/checkout/success?session_id=...`.
+5. The Air Refrigerant checkout page displays a trusted order review with each
+   product's image, name, option, quantity, and total. These details come from
+   the server catalog rather than browser-supplied values.
+6. Stripe's secure payment form loads beneath that review and continues to
+   receive SKU-only line-item labels.
+7. Card payments complete without leaving the site. Redirect-based payment methods return to `/checkout/success?session_id=...`.
 
 The Track Order page accepts the Stripe Checkout Session reference shown on the confirmation page. Stripe payment information stays server-side.
 

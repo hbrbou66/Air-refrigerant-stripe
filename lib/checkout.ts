@@ -15,4 +15,26 @@ export interface CheckoutItem {
   quantity: number;
 }
 
+export interface CheckoutSummaryItem {
+  sku: string;
+  productSlug: string;
+  productName: string;
+  refrigerantCode: string;
+  variantLabel: string;
+  image: string;
+  quantity: number;
+  unitPrice: number;
+  lineTotal: number;
+  currency: string;
+}
+
+export interface CheckoutOrderSummary {
+  items: CheckoutSummaryItem[];
+  itemCount: number;
+  subtotal: number;
+  shipping: number;
+  total: number;
+  currency: string;
+}
+
 export const CHECKOUT_STORAGE_KEY = "ar_checkout_items_v1";
